@@ -1,5 +1,6 @@
 package com.banking.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,14 @@ public class AccountController {
 		return new ResponseEntity<AccountDto>(accountService.createAccount(accountDto),HttpStatus.CREATED);
 		
 	}
+
+//	public static void main(String[] args) {
+//		System.out.println();
+//		System.out.println("AccountController.main");
+//		System.out.printf("");
+//		System.out.println("args = " + Arrays.toString(args));
+//		System.out.println("true = " + true);
+//	}
 	
 	// Get Account Rest Api
 	
