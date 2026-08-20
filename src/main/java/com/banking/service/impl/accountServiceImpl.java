@@ -39,43 +39,41 @@ public class accountServiceImpl implements AccountService {
 
 
 	@Override
-	public AccountDto getAccountById(Long id) {
-		 Account account = account_repository.
-				 findById(id).
-				 orElseThrow(()-> new RuntimeException("Acount not found"));
-		return AccountMapper.mapToAccountDto(account);
-	}
-
-
-	@Override
-	public AccountDto deposit(Long id, double amount) {
-		Account account = account_repository.findById(id).
-		orElseThrow(()-> new RuntimeException("account doesn't exist") );
-		double balance = account.getBalance();
-		account.setBalance(balance+amount);
-		Account save = account_repository.save(account);
-		
-		return AccountMapper.mapToAccountDto(save);
-	}
-
-
-	@Override
-	public AccountDto withdraw(Long id, double amount) {
-		Account account = account_repository.findById(id).
-		orElseThrow(()-> new RuntimeException("Account Doesn't Exist"));
-		double balance = account.getBalance();
-		try {
-			if(balance>=amount) {
-				account.setBalance(balance-amount);
-				
-			}
-		} catch (Exception e) {
-			
+		public AccountDto getAccountById(Long id) {
+			Account account = account_repository.findById(id)
+				.orElseThrow(() -> new com.banking.exceptions.ResourceNotFoundException("Account not found with id: " + id));
+			return AccountMapper.mapToAccountDto(account);
 		}
-		Account save = account_repository.save(account);
+
+
+		@Override
+		public AccountDto deposit(Long id, double amount) {
+			Account account = account_repository.findById(id)
+				.orElseThrow(() -> new com.banking.exceptions.ResourceNotFoundException("Account not found with id: " + id));
+			double balance = account.getBalance();
+			account.setBalance(balance + amount);
+			Account save = account_repository.save(account);
 		
-		return AccountMapper.mapToAccountDto(save);
-	}
+			return AccountMapper.mapToAccountDto(save);
+		}
+
+
+		@Override
+		public AccountDto withdraw(Long id, double amount) {
+			Account account = account_repository.findById(id)
+				.orElseThrow(() -> new com.banking.exceptions.ResourceNotFoundException("Account not found with id: " + id));
+			double balance = account.getBalance();
+			if (amount < 0) {
+				throw new com.banking.exceptions.BadRequestException("Withdraw amount must be positive");
+			}
+			if (balance < amount) {
+				throw new com.banking.exceptions.BadRequestException("Insufficient balance");
+			}
+			account.setBalance(balance - amount);
+			Account save = account_repository.save(account);
+		
+			return AccountMapper.mapToAccountDto(save);
+		}
 
 
 	@Override
