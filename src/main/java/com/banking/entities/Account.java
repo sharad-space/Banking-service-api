@@ -25,5 +25,6 @@ public class Account {
 	@Column(name = "Account_holder_name")
 	private String accountHolderName;
 	private double balance;
+//	this is main class controller.
 
 }
