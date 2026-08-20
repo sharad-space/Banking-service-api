@@ -18,7 +18,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "Account_Details")
 public class Account {
-
+	
+// this is bank account details of customer
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
