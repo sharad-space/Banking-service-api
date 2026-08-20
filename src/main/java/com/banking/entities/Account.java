@@ -13,7 +13,6 @@ import lombok.Setter;
 
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "Account_Details")
 public class Account {
@@ -25,6 +24,12 @@ public class Account {
 	@Column(name = "Account_holder_name")
 	private String accountHolderName;
 	private double balance;
+
+	public Account(long id, String accountHolderName, double balance) {
+		this.id = id;
+		this.accountHolderName = accountHolderName;
+		this.balance = balance;
+	}
 
 	public long getId() {
 		return id;
