@@ -54,4 +54,9 @@ public class Account {
 	public void setBalance(double balance) {
 		this.balance = balance;
 	}
+
+	int a=10;
+	int b=20;
+
+
 }
