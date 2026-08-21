@@ -1,6 +1,6 @@
 package com.banking.controller;
 
-import java.util.Arrays;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -21,71 +21,50 @@ import com.banking.service.AccountService;
 @RestController
 @RequestMapping("/api/account")
 public class AccountController {
-	
-	private AccountService accountService;
 
-	public AccountController(AccountService accountService) {
-		super();
-		this.accountService = accountService;
-	}
-	
-	// add account res api
-	
-	@PostMapping
-	public ResponseEntity<AccountDto> addAccount(@RequestBody AccountDto accountDto){
-		return new ResponseEntity<AccountDto>(accountService.createAccount(accountDto),HttpStatus.CREATED);
-		
-	}
+    private final AccountService accountService;
 
-//	public static void main(String[] args) {
-//		System.out.println();
-//		System.out.println("AccountController.main");
-//		System.out.printf("");
-//		System.out.println("args = " + Arrays.toString(args));
-//		System.out.println("true = " + true);
-//	}
-	
-	// Get Account Rest Api
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<AccountDto> getAccountById(@PathVariable Long id){
-		AccountDto accountById = accountService.getAccountById(id);
-		return ResponseEntity.ok(accountById);
-	}
-	
-	//deposit REST API
-	
-	@PutMapping("/{id}/deposit")
-	public ResponseEntity<AccountDto> deposit(@PathVariable Long id, 
-			@RequestBody Map<String, Double> request) {
-		 Double amount = request.get("amount");
-		AccountDto deposit = accountService.deposit(id,amount);
-		
-		return ResponseEntity.ok(deposit);
-	}
-	
-	@PutMapping("/{id}/withdraw")
-	public ResponseEntity<AccountDto> withdraw(@PathVariable Long id, 
-			@RequestBody Map<String, Double> request) {
-		 Double amount = request.get("amount");
-		AccountDto withdraw = accountService.withdraw(id,amount);
-		
-		return ResponseEntity.ok(withdraw);
-	}
-	
-	@GetMapping("/accounts")
-	public ResponseEntity<List<AccountDto>> getAllAcounts(){
-		List<AccountDto> allAccounts = accountService.getAllAccounts();
-		
-		return ResponseEntity.ok(allAccounts);
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteAccount(@PathVariable Long id){
-		accountService.deleteAccount(id);
-		
-		return  ResponseEntity.ok("Account deleted");
-	}
-	
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
+    @PostMapping
+    public ResponseEntity<AccountDto> addAccount(@RequestBody AccountDto accountDto) {
+        // Validate required linkage to customer
+        if (accountDto.getCustomerNumber() == null || accountDto.getCustomerNumber().trim().isEmpty()) {
+            throw new com.banking.exceptions.BadRequestException("customerNumber is required to create an account");
+        }
+        return new ResponseEntity<>(accountService.createAccount(accountDto), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AccountDto> getAccountById(@PathVariable Long id) {
+        return ResponseEntity.ok(accountService.getAccountById(id));
+    }
+
+    @PutMapping("/{id}/deposit")
+    public ResponseEntity<AccountDto> deposit(@PathVariable Long id,
+                                            @RequestBody Map<String, BigDecimal> request) {
+        BigDecimal amount = request.get("amount");
+        return ResponseEntity.ok(accountService.deposit(id, amount));
+    }
+
+    @PutMapping("/{id}/withdraw")
+    public ResponseEntity<AccountDto> withdraw(@PathVariable Long id,
+                                             @RequestBody Map<String, BigDecimal> request) {
+        BigDecimal amount = request.get("amount");
+        return ResponseEntity.ok(accountService.withdraw(id, amount));
+    }
+
+    @GetMapping("/accounts")
+    public ResponseEntity<List<AccountDto>> getAllAcounts() {
+        return ResponseEntity.ok(accountService.getAllAccounts());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAccount(@PathVariable Long id) {
+        accountService.deleteAccount(id);
+        return ResponseEntity.ok("Account deleted");
+    }
 }
+
