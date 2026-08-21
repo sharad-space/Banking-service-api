@@ -10,6 +10,12 @@ public interface CustomerService {
 
     CustomerDto getCustomerById(Long id);
 
+    CustomerDto getCustomerByCustomerNumber(String customerNumber);
+
+    CustomerDto updateCustomer(Long id, CustomerDto customerDto);
+
+    CustomerDto deactivateCustomer(Long id);
+
     List<CustomerDto> getAllCustomers();
 
     void deleteCustomer(Long id);
