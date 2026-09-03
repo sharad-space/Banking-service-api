@@ -14,14 +14,14 @@ import com.banking.dto.CustomerBankingDetailDto;
 import com.banking.dto.TransactionResponse;
 import com.banking.entities.Account;
 import com.banking.entities.Customer;
-import com.banking.entities.CustomerBankingSnapshot;
+import com.banking.entities.read.CustomerBankingSnapshot;
 import com.banking.entities.Transaction;
 import com.banking.exceptions.ResourceNotFoundException;
 import com.banking.mapper.AccountMapper;
 import com.banking.mapper.CustomerMapper;
 import com.banking.mapper.TransactionMapper;
 import com.banking.repostories.AccountRepository;
-import com.banking.repostories.CustomerBankingSnapshotRepository;
+import com.banking.repostories.read.CustomerBankingSnapshotRepository;
 import com.banking.repostories.CustomerRepository;
 import com.banking.repostories.TransactionRepository;
 import com.banking.service.CustomerBankingService;
@@ -50,7 +50,7 @@ public class CustomerBankingServiceImpl implements CustomerBankingService {
     }
 
     @Override
-    @Transactional
+    @Transactional("primaryTransactionManager")
     public CustomerBankingDetailDto getCustomerBankingDetails(Long customerId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + customerId));

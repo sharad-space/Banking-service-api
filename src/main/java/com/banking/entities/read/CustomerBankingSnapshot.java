@@ -1,7 +1,8 @@
-package com.banking.entities;
+package com.banking.entities.read;
 
 import java.time.LocalDateTime;
 
+import com.banking.entities.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
