@@ -42,6 +42,9 @@ public class PrimaryDataSourceConfig {
                 .build();
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.core.env.Environment env;
+
     @Bean
     @Primary
     public LocalContainerEntityManagerFactoryBean primaryEntityManagerFactory(
@@ -54,6 +57,14 @@ public class PrimaryDataSourceConfig {
 
             org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter vendorAdapter = new org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter();
             emf.setJpaVendorAdapter(vendorAdapter);
+
+            java.util.Map<String, Object> jpaProps = new java.util.HashMap<>();
+            jpaProps.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto", "none"));
+            jpaProps.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect"));
+            jpaProps.put("hibernate.show_sql", env.getProperty("spring.jpa.show-sql", "false"));
+            jpaProps.put("hibernate.format_sql", env.getProperty("spring.jpa.properties.hibernate.format_sql", "false"));
+            emf.setJpaPropertyMap(jpaProps);
+
             return emf;
         }
 
